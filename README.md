@@ -119,8 +119,8 @@ services:
         POSTGRES_PORT: 5432
         ALLOWED_HOST: "*"
         URL_REDIS: 'redis'
-        # DJANGO_SETTINGS_MODULE: orbiconnect.settings
-    # command: bash -c "daphne -b 0.0.0.0 -p 8000 orbiconnect.asgi:application"
+        # DJANGO_SETTINGS_MODULE: myapp.settings
+    # command: bash -c "daphne -b 0.0.0.0 -p 8000 myapp.asgi:application"
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
     depends_on:
       - db
