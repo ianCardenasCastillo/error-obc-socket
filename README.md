@@ -85,3 +85,52 @@ class NoticiaConsumer(WebsocketConsumer):
 * channels
 * channels_redis
 * Twisted[tls,http2]
+
+**docker-compose.yaml**
+```
+version: '3.8'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: password
+      POSTGRES_USER: user
+      POSTGRES_DB: mydatabase
+    volumes:
+      - "myapp-vol:/var/lib/postgresql/data"
+  api:
+    container_name: myapp-api
+    build:
+        context: ./
+        dockerfile: Dockerfile
+    ports:
+        - "8000:8000"
+    volumes:
+        - ./src:/src
+    environment:
+        POSTGRES_HOST: db
+        POSTGRES_PASSWORD: password
+        POSTGRES_USER: user
+        POSTGRES_DB: mydatabase
+        POSTGRES_PORT: 5432
+        ALLOWED_HOST: "*"
+        URL_REDIS: 'redis'
+        # DJANGO_SETTINGS_MODULE: orbiconnect.settings
+    # command: bash -c "daphne -b 0.0.0.0 -p 8000 orbiconnect.asgi:application"
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    depends_on:
+      - db
+      - redis
+  redis:
+    image: redis
+    restart: always
+    ports:
+      - "6379:6379"
+    
+volumes:
+  myapp-vol:
+```
